@@ -1,0 +1,54 @@
+<!doctype html>
+<head>
+<meta charset="utf-8">
+<style>
+.icon {
+    width: 32px;
+    height: 32px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: 10%;
+    float: left;
+    margin: 0 10px;
+}
+
+.icon-wrapper {
+    float: left;
+}
+
+h5 {
+    width: 50px;
+    font-family: courier;
+    font-size: 10px;
+    word-wrap: break-word;
+    opacity: 0.25;
+}
+</style>
+</head>
+<body>
+    <div id="icon"></div>
+    <script src="blockies.js"></script>
+    <script>
+    // Add the addresses here as json separated
+    var addresses = ['0x34acb8de9efccfc49acb572bcba8c54505164a1e', '0xe256b36f20be68aea22352aa3224076031bab78b', '0xf3cca49ef860492bc8ea9841d5ac922daf0235b0', '0xe466f877e67420edfbf08d7d43a6f047ef4a1c42', '0xfb4914349f06cb3718e0bffbedb7847444fdeb37', '0x3d8de820405af934235434c5985ed2ba283620d9']
+
+        for (i = 0; i < addresses.length; i++) {
+            var address = addresses[i];
+            var icon = document.createElement('div');
+            icon.title = address;
+            icon.style.backgroundImage = 'url(' + blockies.create({ seed:address ,size: 8,scale: 16}).toDataURL()+')';
+            var title = document.createElement('h5');
+            title.innerHTML = address.slice(2);
+
+            var div = document.createElement('div');
+            icon.classList.add('icon');
+            div.appendChild(icon);
+            div.appendChild(title)
+            div.classList.add('icon-wrapper')
+
+            document.body.appendChild(div);
+        }
+
+
+    </script>
+</body>
