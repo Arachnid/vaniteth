@@ -21,4 +21,4 @@ A docker image for this binary is available on dockerhub [here](https://hub.dock
 
 You can further select addresses by the icon they output. You can't automate this judgement (yet) but you can visualize them all by simply cloning the repository, adding a list of adresses to the `vanity-address-sampler.html` file as a json format and then running it in the webbrowser.
 
-![vanity icons](vanity.png)
+![vanity icons shown](vanity.png)
