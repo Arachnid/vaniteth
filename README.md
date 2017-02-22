@@ -1,12 +1,13 @@
 # vaniteth
 Generates Ethereum vanity addresses
 
-By default, generates vanity account addresses, using a scoring function that prioritises smaller addresses, which produces addresses with many leading zeroes. You can choose the scoring function with `--scorer`; valid options include:
+By default, generates vanity account addresses, using a set of built in scoring functions. You can choose the scoring functions to use with `--scorers`; valid options include:
 
  - `least`: Scores smaller addresses more highly
- - `most`: Scores larger addresses more highly
  - `ascending`: Scores addresses on the length of ascending sequences (11122579...)
  - `strictAscending`: Scores addresses on the length of ascending sequences, with no gaps permitted (1122344...)
+
+Since generation is random, using multiple scoring functions helps find more interesting addresses, but since scoring functions take time to execute, it's best to leave out ones you're definitely not interested in.
 
 Pull requests for more scoring functions are most welcome.
 
