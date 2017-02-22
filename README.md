@@ -16,3 +16,8 @@ To generate contract addresses instead of account addresses, supply the flag `--
 Output is a newline separated list of mined addresses, nonces (if in contract mode) and raw private keys. Only addresses that are as good as or better than the current best result are output.
 
 A docker image for this binary is available on dockerhub [here](https://hub.docker.com/r/arachnid/vaniteth/).
+
+#### Icon visualizer
+
+You can further select addresses by the icon they output. You can't automate this judgement (yet) but you can visualize them all by simply cloning the repository, adding a list of adresses to the `vanity-address-sampler.html` file as a json format and then running it in the webbrowser.
+
