@@ -1,7 +1,6 @@
 package main
 
 import (
-    "bytes"
     "crypto/ecdsa"
     "crypto/rand"
     "encoding/hex"
@@ -24,8 +23,20 @@ type Result struct {
     nonce      int
 }
 
-func leastScorer(a, b common.Address) int {
-    return -bytes.Compare(a.Bytes(), b.Bytes())
+func targetScorer(a, b common.Address) int {
+    return countPrefix(a.Bytes(), target.Bytes()) - countPrefix(b.Bytes(), target.Bytes())
+}
+
+func countPrefix(a, b []byte) int {
+    for i := 0; i < 20; i++ {
+        for j := 0; j <= 1; j++ {
+            shift := 4 * (1 - uint(j))
+            if (a[i] >> shift) & 0xf != (b[i] >> shift) & 0xf {
+                return i * 2 + j
+            }
+        }
+    }
+    return 40
 }
 
 func ascendingScorer(a, b common.Address) int {
@@ -54,12 +65,14 @@ func countAscending(data []byte, strict bool) int {
 
 type StringList []string
 
-func (sl StringList) String() string {
-    return strings.Join([]string(sl), ",")
+func (sl *StringList) String() string {
+    return strings.Join([]string(*sl), ",")
 }
 
-func (sl StringList) Set(value string) error {
-    copy(sl, strings.Split(value, ","))
+func (sl *StringList) Set(value string) error {
+    parts := strings.Split(value, ",")
+    *sl = make([]string, len(parts))
+    copy(*sl, parts)
     return nil
 }
 
@@ -67,12 +80,14 @@ var (
     threads = flag.Int("threads", 2, "Number of threads to run")
     contractAddress = flag.Bool("contract", false, "Derive addresses for deployed contracts instead of accounts")
     maxNonce = flag.Int("maxnonce", 32, "Maximum nonce value to test when deriving contract addresses")
-    scorers = StringList{"least", "ascending", "strictAscending"}
+    targetHex = flag.String("target", "0x0000000000000000000000000000000000000000", "Target address to mine towards")
+    target common.Address
+    scorers = StringList{"target", "ascending", "strictAscending"}
 
     scoreFuncs = map[string]addressComparer{
-        "least":            leastScorer,
         "ascending":        ascendingScorer,
         "strictAscending":  strictAscendingScorer,
+        "target":           targetScorer,
     }
 )
 
@@ -88,8 +103,9 @@ func scoreTest(funcs map[string]addressComparer, bests map[string]common.Address
 }
 
 func main() {
-    flag.Var(scorers, "scorers", "List of score functions to use")
+    flag.Var(&scorers, "scorers", "List of score functions to use")
     flag.Parse()
+    target = common.HexToAddress(*targetHex)
 
     funcs := make(map[string]addressComparer)
     for _, k := range scorers {
